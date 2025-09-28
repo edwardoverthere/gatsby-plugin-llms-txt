@@ -29,12 +29,12 @@ module.exports = {
 			resolve: 'gatsby-plugin-llms-txt',
 			options: {
 				query: `
-          query {
-            settings {
-              llmsTxt
-            }
-          }
-        `,
+					query {
+						settings {
+						llmsTxt
+						}
+					}
+				`,
 				contentPath: 'settings.llmsTxt',
 			},
 		},
