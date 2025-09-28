@@ -23,7 +23,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/edwardoverthere/gatsby-plugin-llms-txt.git"
+		"url": "git+https://github.com/edwardoverthere/gatsby-plugin-llms-txt.git"
 	},
 	"bugs": {
 		"url": "https://github.com/edwardoverthere/gatsby-plugin-llms-txt/issues"
