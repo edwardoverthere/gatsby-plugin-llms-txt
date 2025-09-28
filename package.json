@@ -1,0 +1,38 @@
+{
+	"name": "gatsby-plugin-llms-txt",
+	"version": "1.0.0",
+	"description": "A Gatsby plugin to generate llms.txt file from CMS content or other source during build",
+	"main": "index.js",
+	"files": [
+		"gatsby-node.js",
+		"index.js",
+		"README.md"
+	],
+	"keywords": [
+		"gatsby",
+		"gatsby-plugin",
+		"gatsby-plugin-llms-txt",
+		"llms",
+		"llms.txt",
+		"ai",
+		"cms",
+		"sanity",
+		"build"
+	],
+	"author": "Edward Darling <edward@dock90.io>",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/edwardoverthere/gatsby-plugin-llms-txt.git"
+	},
+	"bugs": {
+		"url": "https://github.com/edwardoverthere/gatsby-plugin-llms-txt/issues"
+	},
+	"homepage": "https://github.com/edwardoverthere/gatsby-plugin-llms-txt#readme",
+	"peerDependencies": {
+		"gatsby": "^4.0.0 || ^5.0.0"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}
