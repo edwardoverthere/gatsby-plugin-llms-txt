@@ -24,22 +24,22 @@ Add the plugin to your `gatsby-config.js`:
 
 ```javascript
 module.exports = {
-  plugins: [
-    {
-      resolve: 'gatsby-plugin-llms-txt',
-      options: {
-        query: `
+	plugins: [
+		{
+			resolve: 'gatsby-plugin-llms-txt',
+			options: {
+				query: `
           query {
             settings {
               llmsTxt
             }
           }
         `,
-        contentPath: 'settings.llmsTxt'
-      }
-    }
-  ]
-}
+				contentPath: 'settings.llmsTxt',
+			},
+		},
+	],
+};
 ```
 
 ## Configuration
@@ -63,7 +63,7 @@ A dot-notation path to the field containing your llms.txt content within the Gra
   resolve: 'gatsby-plugin-llms-txt',
   options: {
     query: `
-      query {
+      {
         settings {
           llmsTxt
         }
@@ -81,7 +81,7 @@ A dot-notation path to the field containing your llms.txt content within the Gra
   resolve: 'gatsby-plugin-llms-txt',
   options: {
     query: `
-      query {
+      {
         site {
           siteMetadata {
             llmsContent
@@ -104,16 +104,17 @@ A dot-notation path to the field containing your llms.txt content within the Gra
 
 ## Requirements
 
-- Gatsby v4, or v5
-- A GraphQL data source (Sanity, Contentful, etc.)
+-   Gatsby v4, or v5
+-   A GraphQL data source (Sanity, Contentful, etc.)
 
 ## Error Handling
 
 The plugin will:
-- Log an error if the `query` option is missing
-- Log an error if the `contentPath` option is missing
-- Log a warning if no content is found and skip file creation
-- Log errors if the GraphQL query fails
+
+-   Log an error if the `query` option is missing
+-   Log an error if the `contentPath` option is missing
+-   Log a warning if no content is found and skip file creation
+-   Log errors if the GraphQL query fails
 
 ## Contributing
 
