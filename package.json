@@ -1,6 +1,6 @@
 {
 	"name": "gatsby-plugin-llms-txt",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A Gatsby plugin to generate llms.txt file from CMS content or other source during build",
 	"main": "index.js",
 	"files": [
