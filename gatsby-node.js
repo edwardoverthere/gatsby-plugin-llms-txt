@@ -1,62 +1,64 @@
 const fs = require('fs');
 const path = require('path');
 
-exports.onPostBuild = async ({ graphql, reporter }, pluginOptions) => {
+exports.pluginOptionsSchema = ({ Joi }) =>
+	Joi.object({
+		query: Joi.string()
+			.required()
+			.description('GraphQL query that fetches the llms.txt content'),
+		contentPath: Joi.string()
+			.required()
+			.description(
+				'Dot-notation path to the content within the query result (e.g., "settings.llmsTxt")'
+			),
+	});
+
+exports.onPostBuild = async ({ graphql, reporter, store }, pluginOptions) => {
 	const { query, contentPath } = pluginOptions;
+	const outputPath = path.join(
+		store.getState().program.directory,
+		'public',
+		'llms.txt'
+	);
 
-	if (!query) {
-		reporter.error(
-			'gatsby-plugin-llms-txt requires a "query" option to be provided'
+	reporter.info('Generating llms.txt from query...');
+
+	// query for the llms.txt content
+	const result = await graphql(query);
+
+	if (result.errors) {
+		reporter.panicOnBuild(
+			'Error querying for llms.txt content',
+			result.errors
 		);
 		return;
 	}
 
-	if (!contentPath) {
-		reporter.error(
-			'gatsby-plugin-llms-txt requires a "contentPath" option to be provided (e.g., "settings.llmsTxt")'
+	// extract the content from the query result using the provided path
+	const llmsContent = contentPath
+		.split('.')
+		.reduce((obj, key) => obj?.[key], result.data);
+
+	if (llmsContent != null && typeof llmsContent !== 'string') {
+		reporter.panicOnBuild(
+			`gatsby-plugin-llms-txt expected "${contentPath}" to be a string, got ${
+				Array.isArray(llmsContent) ? 'an array' : typeof llmsContent
+			}`
 		);
 		return;
 	}
 
-	try {
-		reporter.info('🤖 Generating llms.txt from query...');
-
-		// query for the llms.txt content
-		const result = await graphql(query);
-
-		if (result.errors) {
-			reporter.error(
-				'Error querying for llms.txt content:',
-				result.errors
-			);
-			return;
-		}
-
-		// extract the content from the query result using the provided path
-		const llmsContent = contentPath
-			.split('.')
-			.reduce((obj, key) => obj?.[key], result.data);
-
-		if (!llmsContent || llmsContent.trim() === '') {
-			reporter.info(
-				'⚠️ No llms.txt content found in query, skipping file creation'
-			);
-			return;
-		}
-
-		const outputPath = 'public/llms.txt';
-
-		// ensure the output directory exists
-		const outputDir = path.dirname(outputPath);
-		if (!fs.existsSync(outputDir)) {
-			fs.mkdirSync(outputDir, { recursive: true });
-		}
-
-		// write the content to the file
-		fs.writeFileSync(outputPath, llmsContent.trim());
-
-		reporter.success(`✅ llms.txt successfully created at ${outputPath}`);
-	} catch (error) {
-		reporter.error('Error generating llms.txt:', error);
+	if (!llmsContent || llmsContent.trim() === '') {
+		// remove any file left over from a previous build
+		fs.rmSync(outputPath, { force: true });
+		reporter.warn(
+			'No llms.txt content found in query, skipping file creation'
+		);
+		return;
 	}
+
+	// write the content to the file
+	fs.writeFileSync(outputPath, `${llmsContent.trim()}\n`);
+
+	reporter.success('llms.txt created at public/llms.txt');
 };
