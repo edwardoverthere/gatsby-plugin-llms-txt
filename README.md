@@ -4,7 +4,7 @@ A Gatsby plugin that generates an `llms.txt` file from your CMS content or other
 
 ## What is llms.txt?
 
-The `llms.txt` file is a proposed standard for providing context and instructions to Large Language Models (LLMs) about your website. It's similar to `robots.txt` but designed specifically for AI consumption.
+The `llms.txt` file is a proposed standard for giving Large Language Models (LLMs) a concise, markdown-formatted overview of your website and links to its most useful content. It lives at the site root like `robots.txt`, but it is written for AI consumption rather than for controlling crawlers.
 
 ## Installation
 
@@ -31,7 +31,7 @@ module.exports = {
 				query: `
 					query {
 						settings {
-						llmsTxt
+							llmsTxt
 						}
 					}
 				`,
@@ -104,7 +104,7 @@ A dot-notation path to the field containing your llms.txt content within the Gra
 
 ## Requirements
 
--   Gatsby v4, or v5
+-   Gatsby v4 or v5
 -   A GraphQL data source (Sanity, Contentful, etc.)
 
 ## Error Handling

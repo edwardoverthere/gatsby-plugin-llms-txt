@@ -5,8 +5,7 @@
 	"main": "index.js",
 	"files": [
 		"gatsby-node.js",
-		"index.js",
-		"README.md"
+		"index.js"
 	],
 	"keywords": [
 		"gatsby",
