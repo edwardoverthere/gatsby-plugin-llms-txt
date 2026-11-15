@@ -99,7 +99,7 @@ A dot-notation path to the field containing your llms.txt content within the Gra
 1. During the build process (`onPostBuild` hook), the plugin executes your GraphQL query
 2. It extracts the content using the specified `contentPath`
 3. If content is found, it writes it to `public/llms.txt`
-4. If no content is found or the field is empty, it skips file creation
+4. If no content is found or the field is empty, it skips file creation and removes any `llms.txt` left over from a previous build
 5. The resulting file is accessible at `yoursite.com/llms.txt`
 
 ## Requirements
@@ -111,10 +111,10 @@ A dot-notation path to the field containing your llms.txt content within the Gra
 
 The plugin will:
 
--   Log an error if the `query` option is missing
--   Log an error if the `contentPath` option is missing
--   Log a warning if no content is found and skip file creation
--   Log errors if the GraphQL query fails
+-   Stop at startup if the `query` or `contentPath` option is missing
+-   Fail the build if the GraphQL query returns errors
+-   Fail the build if the content at `contentPath` is not a string
+-   Log a warning if no content is found, skip file creation, and remove any `llms.txt` left over from a previous build
 
 ## Contributing
 
