@@ -22,21 +22,21 @@ Add the plugin to your `gatsby-config.js`. This example reads an `llmsTxt` field
 
 ```javascript
 module.exports = {
-	plugins: [
-		{
-			resolve: 'gatsby-plugin-llms-txt',
-			options: {
-				query: `
-					{
-						settings {
-							llmsTxt
-						}
-					}
-				`,
-				contentPath: 'settings.llmsTxt',
-			},
-		},
-	],
+  plugins: [
+    {
+      resolve: 'gatsby-plugin-llms-txt',
+      options: {
+        query: `
+          {
+            settings {
+              llmsTxt
+            }
+          }
+        `,
+        contentPath: 'settings.llmsTxt',
+      },
+    },
+  ],
 };
 ```
 
@@ -57,19 +57,19 @@ Set either `contentPath` or `serialize`, not both.
 
 ```javascript
 {
-	resolve: 'gatsby-plugin-llms-txt',
-	options: {
-		query: `
-			{
-				site {
-					siteMetadata {
-						llmsContent
-					}
-				}
-			}
-		`,
-		contentPath: 'site.siteMetadata.llmsContent',
-	},
+  resolve: 'gatsby-plugin-llms-txt',
+  options: {
+    query: `
+      {
+        site {
+          siteMetadata {
+            llmsContent
+          }
+        }
+      }
+    `,
+    contentPath: 'site.siteMetadata.llmsContent',
+  },
 }
 ```
 
@@ -77,38 +77,43 @@ Set either `contentPath` or `serialize`, not both.
 
 ```javascript
 {
-	resolve: 'gatsby-plugin-llms-txt',
-	options: {
-		query: `
-			{
-				site {
-					siteMetadata {
-						title
-						description
-						siteUrl
-					}
-				}
-				allMarkdownRemark {
-					nodes {
-						frontmatter {
-							title
-						}
-						fields {
-							slug
-						}
-					}
-				}
-			}
-		`,
-		serialize: ({ data }) => {
-			const { title, description, siteUrl } = data.site.siteMetadata;
-			const links = data.allMarkdownRemark.nodes.map(
-				(node) => `- [${node.frontmatter.title}](${siteUrl}${node.fields.slug})`
-			);
+  resolve: 'gatsby-plugin-llms-txt',
+  options: {
+    query: `
+      {
+        site {
+          siteMetadata {
+            title
+            description
+            siteUrl
+          }
+        }
+        allMarkdownRemark {
+          nodes {
+            frontmatter {
+              title
+            }
+            fields {
+              slug
+            }
+          }
+        }
+      }
+    `,
+    serialize: ({ data }) => {
+      const { title, description, siteUrl } = data.site.siteMetadata;
+      const links = data.allMarkdownRemark.nodes.map(
+        (node) => `- [${node.frontmatter.title}](${siteUrl}${node.fields.slug})`
+      );
 
-			return [`# ${title}`, `> ${description}`, '## Pages', links.join('\n')].join('\n\n');
-		},
-	},
+      return [
+        `# ${title}`,
+        `> ${description}`,
+        '## Pages',
+        links.join('\n'),
+      ].join('\n\n');
+    },
+  },
 }
 ```
 
@@ -118,18 +123,18 @@ List the plugin a second time with a different `output` to write another file:
 
 ```javascript
 {
-	resolve: 'gatsby-plugin-llms-txt',
-	options: {
-		query: `
-			{
-				settings {
-					llmsFullTxt
-				}
-			}
-		`,
-		contentPath: 'settings.llmsFullTxt',
-		output: 'llms-full.txt',
-	},
+  resolve: 'gatsby-plugin-llms-txt',
+  options: {
+    query: `
+      {
+        settings {
+          llmsFullTxt
+        }
+      }
+    `,
+    contentPath: 'settings.llmsFullTxt',
+    output: 'llms-full.txt',
+  },
 }
 ```
 
