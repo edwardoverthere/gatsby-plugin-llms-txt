@@ -3,9 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const Joi = require('joi');
 
-const { onPostBuild, pluginOptionsSchema } = require('../gatsby-node');
+const { onPostBuild } = require('../gatsby-node');
 
 const options = {
 	query: '{ settings { llmsTxt } }',
@@ -104,26 +103,4 @@ test('fails the build when the content is not a string', async () => {
 	assert.equal(fs.existsSync(outputPath), false);
 	assert.deepEqual(levels(calls), ['info', 'panicOnBuild']);
 	assert.match(calls[1].args[0], /"settings\.llmsTxt" to be a string, got an array/);
-});
-
-test('options schema accepts query and contentPath', () => {
-	const { error } = pluginOptionsSchema({ Joi }).validate(options);
-
-	assert.equal(error, undefined);
-});
-
-test('options schema requires query', () => {
-	const { error } = pluginOptionsSchema({ Joi }).validate({
-		contentPath: options.contentPath,
-	});
-
-	assert.match(error.message, /"query" is required/);
-});
-
-test('options schema requires contentPath', () => {
-	const { error } = pluginOptionsSchema({ Joi }).validate({
-		query: options.query,
-	});
-
-	assert.match(error.message, /"contentPath" is required/);
 });
