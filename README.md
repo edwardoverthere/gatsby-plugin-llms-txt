@@ -44,15 +44,23 @@ module.exports = {
 
 ## Configuration
 
-The plugin requires two configuration options:
+The plugin requires `query` and either `contentPath` or `serialize`:
 
 ### `query` (required)
 
 A GraphQL query string that fetches your llms.txt content from your CMS or other source.
 
-### `contentPath` (required)
+### `contentPath`
 
-A dot-notation path to the field containing your llms.txt content within the GraphQL query result.
+A dot-notation path to the field containing your llms.txt content within the GraphQL query result. Required unless `serialize` is set.
+
+### `serialize`
+
+A function that receives `{ data }`, the result of your GraphQL query, and returns the content as a string. It can be async. Use it instead of `contentPath` to build the file from several fields or nodes. Set either `contentPath` or `serialize`, not both.
+
+### `output`
+
+The path of the file to write, relative to `public/`. Defaults to `llms.txt`.
 
 ## Examples
 
@@ -94,12 +102,72 @@ A dot-notation path to the field containing your llms.txt content within the Gra
 }
 ```
 
+### Building the File from Your Pages
+
+```javascript
+{
+  resolve: 'gatsby-plugin-llms-txt',
+  options: {
+    query: `
+      {
+        site {
+          siteMetadata {
+            title
+            description
+            siteUrl
+          }
+        }
+        allMarkdownRemark {
+          nodes {
+            frontmatter {
+              title
+            }
+            fields {
+              slug
+            }
+          }
+        }
+      }
+    `,
+    serialize: ({ data }) => {
+      const { title, description, siteUrl } = data.site.siteMetadata;
+      const links = data.allMarkdownRemark.nodes.map(
+        (node) => `- [${node.frontmatter.title}](${siteUrl}${node.fields.slug})`
+      );
+
+      return [`# ${title}`, `> ${description}`, '## Pages', links.join('\n')].join('\n\n');
+    }
+  }
+}
+```
+
+### Adding llms-full.txt
+
+List the plugin a second time with a different `output` to write another file:
+
+```javascript
+{
+  resolve: 'gatsby-plugin-llms-txt',
+  options: {
+    query: `
+      {
+        settings {
+          llmsFullTxt
+        }
+      }
+    `,
+    contentPath: 'settings.llmsFullTxt',
+    output: 'llms-full.txt'
+  }
+}
+```
+
 ## How it Works
 
 1. During the build process (`onPostBuild` hook), the plugin executes your GraphQL query
-2. It extracts the content using the specified `contentPath`
-3. If content is found, it writes it to `public/llms.txt`
-4. If no content is found or the field is empty, it skips file creation and removes any `llms.txt` left over from a previous build
+2. It extracts the content using the specified `contentPath`, or builds it with `serialize`
+3. If content is found, it writes it to `public/llms.txt` (or the path set in `output`)
+4. If no content is found or the field is empty, it skips file creation and removes any file left over from a previous build
 5. The resulting file is accessible at `yoursite.com/llms.txt`
 
 ## Requirements
@@ -111,10 +179,11 @@ A dot-notation path to the field containing your llms.txt content within the Gra
 
 The plugin will:
 
--   Stop at startup if the `query` or `contentPath` option is missing
+-   Stop at startup if `query` is missing, or if `contentPath` and `serialize` are both missing or both set
 -   Fail the build if the GraphQL query returns errors
--   Fail the build if the content at `contentPath` is not a string
--   Log a warning if no content is found, skip file creation, and remove any `llms.txt` left over from a previous build
+-   Fail the build if the content at `contentPath`, or returned by `serialize`, is not a string
+-   Fail the build if `serialize` throws
+-   Log a warning if no content is found, skip file creation, and remove any file left over from a previous build
 
 ## Contributing
 
