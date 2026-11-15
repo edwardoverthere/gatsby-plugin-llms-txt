@@ -7,6 +7,9 @@
 		"gatsby-node.js",
 		"index.js"
 	],
+	"scripts": {
+		"test": "node --test"
+	},
 	"keywords": [
 		"gatsby",
 		"gatsby-plugin",
